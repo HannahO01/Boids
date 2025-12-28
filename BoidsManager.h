@@ -19,14 +19,17 @@ public:
     TSubclassOf<class ABoidComponent> BoidClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FVector SpawnBounds = FVector(1000, 1000, 1000);
+    FVector SpawnBounds = FVector(250, 1500, 1500);
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FVector Bounds = FVector(500, 3000, 3000);
 
 protected:
     virtual void BeginPlay() override;
 
 private:
     UPROPERTY()
-    TArray<class ABoidComponent*> Boids;
+    TArray<TWeakObjectPtr<class ABoidComponent>> Boids;
+    TArray<ABoidComponent*> GetValidBoids() const;
 
     void SpawnBoids();
 };

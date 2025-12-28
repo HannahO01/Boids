@@ -10,10 +10,17 @@ void ABoidsManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (ABoidComponent* boid : Boids) 
+	FVector Center = GetActorLocation();
+	DrawDebugBox(GetWorld(), Center, Bounds, FColor::Green, false, -1.0f, 0, 2.0f);
+
+	TArray<ABoidComponent*> validBoids = GetValidBoids();
+
+	for (TWeakObjectPtr<ABoidComponent> BoidPtr : Boids)
 	{
-		if (boid)
-			boid->UpdateBoid(Boids, DeltaTime);
+		if (ABoidComponent* Boid = BoidPtr.Get())  // Check if still valid
+		{
+			Boid->UpdateBoid(validBoids, DeltaTime, Center);
+		}
 	}
 }
 
@@ -23,6 +30,23 @@ void ABoidsManager::BeginPlay()
 
 	if (BoidClass)
 		SpawnBoids();
+}
+
+TArray<ABoidComponent*> ABoidsManager::GetValidBoids() const
+{
+	TArray<ABoidComponent*> ValidBoids;
+	ValidBoids.Reserve(Boids.Num());  // Pre-allocate for efficiency
+
+	for (const TWeakObjectPtr<ABoidComponent>& boidPtr : Boids)
+	{
+		// Convert weak pointer to raw pointer if still valid
+		if (ABoidComponent* boid = boidPtr.Get())
+		{
+			ValidBoids.Add(boid);
+		}
+	}
+
+	return ValidBoids;
 }
 
 void ABoidsManager::SpawnBoids()
@@ -39,7 +63,10 @@ void ABoidsManager::SpawnBoids()
 		FRotator spawnRotation = FRotator(0, FMath::RandRange(0, 360), 0);
 
 		ABoidComponent* newBoid = GetWorld()->SpawnActor<ABoidComponent>(BoidClass, spawnLocation, spawnRotation);
-		if (newBoid)
+		if (newBoid) 
+		{
+			newBoid->SetBoundaryBox(Bounds);
 			Boids.Add(newBoid);
+		}
 	}
 }
