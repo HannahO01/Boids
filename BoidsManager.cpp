@@ -65,6 +65,10 @@ void ABoidsManager::SpawnBoids()
 		ABoidComponent* newBoid = GetWorld()->SpawnActor<ABoidComponent>(BoidClass, spawnLocation, spawnRotation);
 		if (newBoid) 
 		{
+			if (i == 0) {
+				newBoid->SetBoidMaterial(BoidMaterial);
+			}
+				
 			newBoid->SetBoundaryBox(Bounds);
 			Boids.Add(newBoid);
 		}

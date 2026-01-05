@@ -19,9 +19,11 @@ public:
     TSubclassOf<class ABoidComponent> BoidClass;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FVector SpawnBounds = FVector(250, 1500, 1500);
+    FVector SpawnBounds = FVector::ZeroVector;
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    FVector Bounds = FVector(500, 3000, 3000);
+    FVector Bounds = FVector::ZeroVector;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UMaterialInterface* BoidMaterial;
 
 protected:
     virtual void BeginPlay() override;

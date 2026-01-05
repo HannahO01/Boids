@@ -21,8 +21,14 @@ public:
 
     void SetBoundaryBox(FVector SomeBoundaryBox) { BoundaryBox = SomeBoundaryBox; }
 
+    void SetBoidMaterial(UMaterialInterface* NewMaterial);
+
+    void DrawDebugLineDirection(FVector Direction, FColor Colour);
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float MaxSpeed = 350.0f;
+    float MaxSpeed = 500.0f;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float MinSpeed = 150.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float PerceptionRadius = 1000.0f;
@@ -38,6 +44,16 @@ private:
     FVector Cohesion(const TArray<ABoidComponent*>& Boids, FVector Center);
 
     FVector ApplyBoundaryConstraint(const FVector& CurrentLocation, FVector Center);
+    FVector CalculateSwirlForce(float DeltaTime);
+
+    UPROPERTY(EditAnywhere, Category = "Boids|Swirl")
+    float SwirlStrength = 100.0f;
+    UPROPERTY(EditAnywhere, Category = "Boids|Swirl")
+    float SwirlFrequency = 0.5f;
+    UPROPERTY(EditAnywhere, Category = "Boids|Swirl")
+    float SwirlWeight = 0.5f;
+
+    float NoiseOffset;
 
     UPROPERTY()
     FVector BoundaryBox = FVector::ZeroVector;
@@ -46,14 +62,17 @@ private:
     float BoundaryForce = 600.0f;
 
     UPROPERTY(EditAnywhere)
-    float SeparationWeight = 1.2f;
+    float SeparationWeight = 5.0f;
 
     UPROPERTY(EditAnywhere)
-    float AlignmentWeight = 1.5f;
+    float AlignmentWeight = 0.1f;
 
     UPROPERTY(EditAnywhere)
-    float CohesionWeight = 1.3f;
+    float CohesionWeight = 0.05f;
 
     UPROPERTY(EditAnywhere)
-    float AvoidanceWeight = 2.5f;
+    float AvoidanceWeight = 2.0f;
+
+    FRotator TargetRotation;
+    float RotationSpeed = 5.0f;
 };
